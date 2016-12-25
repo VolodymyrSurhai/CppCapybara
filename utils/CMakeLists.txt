@@ -1,11 +1,11 @@
 cmake_minimum_required (VERSION 3.6)
 
 project (utils)
-include_directories(sources)
+include_directories(.)
 
 file(GLOB prod_src
-    "sources/*.h"
-    "sources/*.cpp"
+    "*.h"
+    "*.cpp"
 )
 
 file(GLOB test_src
@@ -15,7 +15,7 @@ file(GLOB test_src
 
 # add_library(${project_name} ${prod_src})
 add_executable(${PROJECT_NAME}_test ${test_src})
-target_link_libraries(${PROJECT_NAME}_test c++)
+target_link_libraries(${PROJECT_NAME}_test c++ gtest)
 
 
 

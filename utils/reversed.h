@@ -31,7 +31,7 @@ namespace utils
     };
 
     template <typename T>
-    ReversedVector<T> reverse(std::vector<T>& list)
+    ReversedVector<T> reversed (std::vector<T> &list)
     {
         return ReversedVector<T>(list);
     }
