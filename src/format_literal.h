@@ -8,7 +8,7 @@
 namespace Capybara {
 
     template<class T>
-    void concatenate (std::string &result, const T &add) {
+    void concatenate (std::string& result, const T &add) {
         result += std::to_string(add);
     }
 
