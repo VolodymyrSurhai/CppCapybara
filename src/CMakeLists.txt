@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.6)
-
 project(Capybara)
 include_directories(.)
 
 file(GLOB PROD_SRC
         "*.h"
         "*.cpp"
+        "utils/*.h"
+        "utils/*.cpp"
         )
 
 file(GLOB TEST_SRC
@@ -13,6 +13,12 @@ file(GLOB TEST_SRC
         "tests/*.cpp"
         )
 
-# add_library(${PROJECT_NAME} ${PROD_SRC})
+message(${PROD_SRC})
+message(${TEST_SRC})
+
+add_library(${PROJECT_NAME} ${PROD_SRC})
 add_executable(${PROJECT_NAME}Test ${TEST_SRC})
-target_link_libraries(${PROJECT_NAME}Test gtest_main)
+target_link_libraries(${PROJECT_NAME}Test
+        ${PROJECT_NAME}
+        gtest_main
+        )

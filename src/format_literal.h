@@ -5,20 +5,22 @@
 #include <string>
 
 
-namespace Capybara {
+namespace Capybara
+{
+    void concatenate (std::string& result, const char* add);
 
     template<class T>
-    void concatenate (std::string& result, const T &add) {
-        result += std::to_string(add);
+    void concatenate (std::string& result, const T& add)
+    {
+        result += "_" + std::to_string(add);
     }
 
-    void concatenate (std::string &result, const char *add) {
-        result += add;
-    }
 
     template<class Tuple, std::size_t N>
-    struct TuplePrinter {
-        static void add (std::string &result, const Tuple &t) {
+    struct TuplePrinter
+    {
+        static void add (std::string& result, const Tuple& t)
+        {
             TuplePrinter<Tuple, N - 1>::add(result, t);
             const auto param = std::get<N - 1>(t);
             concatenate(result, param);
@@ -26,25 +28,29 @@ namespace Capybara {
     };
 
     template<class Tuple>
-    struct TuplePrinter<Tuple, 1> {
-        static void add (std::string &result, const Tuple &t) {
+    struct TuplePrinter<Tuple, 1>
+    {
+        static void add (std::string& result, const Tuple& t)
+        {
             result += std::get<0>(t);
         }
     };
 
     template<class... Args>
-    void add (std::string &result, const std::tuple<Args...> &t) {
+    void add (std::string& result, const std::tuple<Args...>& t)
+    {
         TuplePrinter<decltype(t), sizeof...(Args)>::add(result, t);
     }
 
-    class FormattedString {
+    class FormattedString
+    {
     public:
-        FormattedString (std::string pattern)
-                : _pattern(std::move(pattern)) {
-        }
+        FormattedString (std::string pattern, size_t size);
+
 
         template<class ...Args>
-        std::string operator() (Args... args) {
+        std::string operator() (Args... args) const
+        {
             const auto params = std::make_tuple(args...);
 
             auto result = _pattern;
@@ -57,11 +63,10 @@ namespace Capybara {
 
     private:
         const std::string _pattern;
+
     };
 
-    FormattedString operator ""_format (const char *pattern, size_t) {
-        return FormattedString(pattern);
-    }
+    FormattedString operator ""_format (const char* pattern, size_t);
 
 
 } // namespace Capybara

@@ -12,6 +12,12 @@ namespace Capybara
 
         EXPECT_EQ(expected, actual);
     }
+
+    TEST(FormatLiteralTestSuite, SameParamsTestWihtTwoInstansesCase)
+    {
+        EXPECT_EQ("1-2-3", "{}-{}-{}"_format(1, 2, 3));
+        EXPECT_EQ("3-2-1", "{}-{}-{}"_format(3, 2, 1));
+    }
 } // namespace Capybara
 
 
