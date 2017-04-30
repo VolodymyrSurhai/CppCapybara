@@ -18,7 +18,7 @@ for (const auto& item:reversed(container))
     use_item(item);
 }
 ```
-## Capybara::format (in future)
+## Capybara::format (in feature)
 ```cpp
 auto formatted_text = "{}-{}-{}::{}::{}<={}={}"_format("a", "b", 23, "dsf", 1.234345, 'd', "Вжух");
 std::cout << formatted_text << std::endl;
