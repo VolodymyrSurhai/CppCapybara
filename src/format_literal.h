@@ -3,6 +3,7 @@
 #include <vector>
 #include <iterator>
 #include <string>
+#include <tuple>
 
 
 namespace Capybara
