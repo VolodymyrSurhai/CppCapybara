@@ -13,7 +13,7 @@ Simple function for getting reversed iteration in modern "for".
 ```cpp
 std::vector<int> container = {1, 2, 3, 4};
 
-for (const auto& item:reversed(container))
+for (const auto& item : reversed(container))
 {
     use_item(item);
 }

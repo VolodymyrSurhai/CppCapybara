@@ -16,6 +16,7 @@ if (${CC_ENABLE_TESTS})
             )
 
     add_executable(${PROJECT_NAME}Test ${TEST_SRC})
+    add_test(AllTests ${PROJECT_NAME}Test)
     target_link_libraries(${PROJECT_NAME}Test
             ${PROJECT_NAME}
             gtest_main
