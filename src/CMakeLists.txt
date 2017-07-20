@@ -18,6 +18,6 @@ if (${CC_ENABLE_TESTS})
     add_executable(${PROJECT_NAME}Test ${TEST_SRC})
     target_link_libraries(${PROJECT_NAME}Test
             ${PROJECT_NAME}
-            # gtest_main
+            gtest_main
             )
 endif (${CC_ENABLE_TESTS})
