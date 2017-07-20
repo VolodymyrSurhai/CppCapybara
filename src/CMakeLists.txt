@@ -9,7 +9,7 @@ file(GLOB PROD_SRC
         )
 add_library(${PROJECT_NAME} ${PROD_SRC})
 
-if (${ENABLE_TESTS})
+if (${CC_ENABLE_TESTS})
     file(GLOB TEST_SRC
             "tests/*.h"
             "tests/*.cpp"
@@ -18,6 +18,6 @@ if (${ENABLE_TESTS})
     add_executable(${PROJECT_NAME}Test ${TEST_SRC})
     target_link_libraries(${PROJECT_NAME}Test
             ${PROJECT_NAME}
-            gtest_main
+            # gtest_main
             )
-endif (${ENABLE_TESTS})
+endif (${CC_ENABLE_TESTS})

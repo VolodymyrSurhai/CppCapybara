@@ -13,10 +13,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
-if (${ENABLE_TESTS})
+set(CC_ENABLE_TESTS FALSE)
+
+if (${CC_ENABLE_TESTS})
     add_subdirectory(thirdparty/googletest)
-    include_directories(thirdparty/googletest/googletest/include)
-    link_directories(${PROJECT_BINARY_DIR}/thirdparty/googletest/googlemock/gtest)
-endif (${ENABLE_TESTS})
+    enable_testing()
+    include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+    link_directories(${gtest_BINARY_DIR})
+endif (${CC_ENABLE_TESTS})
 
 add_subdirectory(src)
