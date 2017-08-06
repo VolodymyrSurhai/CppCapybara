@@ -2,65 +2,53 @@
 
 #include <gtest/gtest.h>
 
+namespace Capybara {
+TEST(ReverseTestSuite, ReversedIntVectorIteratorTestCase) {
+  std::vector<int> container = {1, 2, 3, 4};
 
-namespace Capybara
-{
-    TEST(ReverseTestSuite, ReversedIntVectorIteratorTestCase)
-    {
-        std::vector<int> container = {1, 2, 3, 4};
+  std::string result;
 
-        std::string result;
+  for (const auto &item : reversed(container)) {
+    result += std::to_string(item);
+  }
 
-        for (const auto& item : reversed(container))
-        {
-            result += std::to_string(item);
-        }
+  EXPECT_EQ("4321", result);
+}
 
-        EXPECT_EQ("4321", result);
+TEST(ReverseTestSuite, ReversedIntVectorConstIteratorTestCase) {
+  const std::vector<int> container = {1, 2, 3, 4};
 
-    }
+  std::string result;
 
-    TEST(ReverseTestSuite, ReversedIntVectorConstIteratorTestCase)
-    {
-        const std::vector<int> container = {1, 2, 3, 4};
+  for (const auto &item : reversed(container)) {
+    result += std::to_string(item);
+  }
 
-        std::string result;
+  EXPECT_EQ("4321", result);
+}
 
-        for (const auto& item : reversed(container))
-        {
-            result += std::to_string(item);
-        }
+TEST(ReverseTestSuite, ReversedStringVectorIteratorTestCase) {
+  std::vector<std::string> container = {"1", "2", "3", "4"};
 
-        EXPECT_EQ("4321", result);
+  std::string result;
 
-    }
+  for (const auto &item : reversed(container)) {
+    result += item;
+  }
 
-    TEST(ReverseTestSuite, ReversedStringVectorIteratorTestCase)
-    {
-        std::vector<std::string> container = {"1", "2", "3", "4"};
+  EXPECT_EQ("4321", result);
+}
 
-        std::string result;
+TEST(ReverseTestSuite, ReversedStringVectorConstIteratorTestCase) {
+  const std::vector<std::string> container = {"1", "2", "3", "4"};
 
-        for (const auto& item : reversed(container))
-        {
-            result += item;
-        }
+  std::string result;
 
-        EXPECT_EQ("4321", result);
-    }
+  for (const auto &item : reversed(container)) {
+    result += item;
+  }
 
-    TEST(ReverseTestSuite, ReversedStringVectorConstIteratorTestCase)
-    {
-        const std::vector<std::string> container = {"1", "2", "3", "4"};
-
-        std::string result;
-
-        for (const auto& item : reversed(container))
-        {
-            result += item;
-        }
-
-        EXPECT_EQ("4321", result);
-    }
+  EXPECT_EQ("4321", result);
+}
 
 } // namespace Capybara
