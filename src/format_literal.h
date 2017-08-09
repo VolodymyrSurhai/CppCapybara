@@ -6,49 +6,65 @@
 #include <tuple>
 
 namespace Capybara {
-void concatenate(std::string &result, const char *add);
-
-template <class T> void concatenate(std::string &result, const T &add) {
-  result += "_" + std::to_string(add);
-}
-
-template <class Tuple, std::size_t N> struct TuplePrinter {
-  static void add(std::string &result, const Tuple &t) {
-    TuplePrinter<Tuple, N - 1>::add(result, t);
-    const auto param = std::get<N - 1>(t);
-    concatenate(result, param);
-  }
-};
-
-template <class Tuple> struct TuplePrinter<Tuple, 1> {
-  static void add(std::string &result, const Tuple &t) {
-    result += std::get<0>(t);
-  }
-};
-
-template <class... Args>
-void add(std::string &result, const std::tuple<Args...> &t) {
-  TuplePrinter<decltype(t), sizeof...(Args)>::add(result, t);
-}
 
 class FormattedString {
 public:
-  FormattedString(std::string pattern, size_t size);
+  class PlaceHolder {
+  public:
+    PlaceHolder();
+    explicit PlaceHolder(const std::string &value);
 
-  template <class... Args> std::string operator()(Args... args) const {
-    const auto params = std::make_tuple(args...);
+    bool isValueWasSet() const;
+    std::string getValue() const;
+    void setValue(std::string value);
 
-    auto result = _pattern;
+  private:
+    bool _valueWasSet;
+    std::string _value;
+  };
 
-    add(result, params);
+  using Tokens = std::vector<PlaceHolder>;
+  static std::string tokensToString(const Tokens &tokens);
 
-    return result;
+  FormattedString(const std::string &pattern);
+
+  template <class T>
+  void fill(Tokens::iterator iterator, Tokens::iterator end,
+            std::size_t argsIndex, T arg) {
+    if (iterator == end) {
+      return;
+    }
+
+    if (!iterator->isValueWasSet()) {
+      iterator->setValue(std::to_string(arg));
+    }
+  }
+
+  template <typename T, typename... Args>
+  void fill(Tokens::iterator iterator, Tokens::iterator end,
+            std::size_t argsIndex, T arg, Args... args) {
+    if (iterator == end) {
+      return;
+    }
+
+    if (!iterator->isValueWasSet()) {
+      iterator->setValue(std::to_string(arg));
+      fill(++iterator, end, argsIndex + 1, args...);
+    }
+  }
+
+  template <typename... Args> std::string operator()(Args... args) const {
+    Tokens result(_tokens);
+
+    fill(result.begin(), result.end(), 0, args...);
+
+    return tokensToString(result);
   }
 
 private:
-  const std::string _pattern;
+  const Tokens _tokens;
 };
 
-FormattedString operator""_format(const char *pattern, size_t);
+FormattedString operator""_format(const char *pattern, std::size_t);
 
 } // namespace Capybara

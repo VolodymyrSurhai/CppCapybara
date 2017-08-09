@@ -12,8 +12,21 @@ TEST(FormatLiteralTestSuite, MixedParamsTestCase) {
   EXPECT_EQ(expected, actual);
 }
 
-TEST(FormatLiteralTestSuite, SameParamsTestWihtTwoInstansesCase) {
+TEST(FormatLiteralTestSuite, SameParamsTestWihtTwoIntsCase) {
   EXPECT_EQ("1-2-3", "{}-{}-{}"_format(1, 2, 3));
-  EXPECT_EQ("3-2-1", "{}-{}-{}"_format(3, 2, 1));
+  EXPECT_EQ("Aaaa-Bbbb-Cccc", "{}-{}-{}"_format("Aaaa", "Bbbb", "Cccc"));
 }
+
+TEST(FormatLiteralTestSuite,
+     SameParamsTestWihtTwoValuesAndThreePlaceHoldersCase) {
+  EXPECT_EQ("1-2-{}", "{}-{}-{}"_format(1, 2));
+  EXPECT_EQ("ABC-DEF-{}", "{}-{}-{}"_format("ABC", "DEF"));
+}
+
+TEST(FormatLiteralTestSuite,
+     SameParamsTestWihtThreeValuesAndTwoPlaceHoldersCase) {
+  EXPECT_EQ("<1-2>", "<{}-{}>"_format(1, 2, 3));
+  EXPECT_EQ("<Aaaa-Bbbb>", "<{}-{}>"_format("Aaaa", "Bbbb", "Cccc"));
+}
+
 } // namespace Capybara
