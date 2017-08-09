@@ -6,7 +6,7 @@ namespace {
 const std::string StringRepresentationPlaceHolder = "{}";
 
 using Tokens = Capybara::FormattedString::Tokens;
-using PlaceHolder = Capybara::FormattedString::PlaceHolder;
+using PlaceHolder = Capybara::Impl::PlaceHolder;
 
 Tokens parsePattern(const std::string &pattern) {
   Tokens tokens;
@@ -44,26 +44,27 @@ Tokens parsePattern(const std::string &pattern) {
 } // namespace
 
 namespace Capybara {
-FormattedString::PlaceHolder::PlaceHolder() : _valueWasSet(false) {}
+namespace Impl {
 
-FormattedString::PlaceHolder::PlaceHolder(const std::string &value)
+PlaceHolder::PlaceHolder() : _valueWasSet(false) {}
+
+PlaceHolder::PlaceHolder(const std::string &value)
     : _valueWasSet(true), _value(std::move(value)) {}
 
-bool FormattedString::PlaceHolder::isValueWasSet() const {
-  return _valueWasSet;
-}
-std::string FormattedString::PlaceHolder::getValue() const {
+bool PlaceHolder::isValueWasSet() const { return _valueWasSet; }
+std::string PlaceHolder::getValue() const {
   if (!_valueWasSet) {
     return StringRepresentationPlaceHolder;
   }
 
   return _value;
 }
-void FormattedString::PlaceHolder::setValue(std::string value) {
+void PlaceHolder::setValue(std::string value) {
+  _valueWasSet = true;
   _value = std::move(value);
 }
 
-std::string FormattedString::tokensToString(const Tokens &tokens) {
+std::string tokensToString(const Tokens &tokens) {
   if (tokens.size() == 1) {
     return tokens[0].getValue();
   }
@@ -83,10 +84,17 @@ std::string FormattedString::tokensToString(const Tokens &tokens) {
   return result;
 }
 
+std::string toString(const char *text) { return std::string(text); }
+
+std::string toString(std::string text) { return text; }
+
+} // namespace Impl
+
 FormattedString::FormattedString(const std::string &pattern)
     : _tokens(parsePattern(pattern)) {}
 
-FormattedString operator""_format(const char *pattern, const std::size_t /*size*/) {
+FormattedString operator""_format(const char *pattern,
+                                  const std::size_t /*size*/) {
   return FormattedString(pattern);
 }
 
