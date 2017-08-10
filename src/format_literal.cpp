@@ -11,7 +11,6 @@ using PlaceHolder = Capybara::Impl::PlaceHolder;
 Tokens parsePattern(const std::string &pattern) {
   Tokens tokens;
   auto placeHolderIndex = pattern.find(StringRepresentationPlaceHolder);
-  std::size_t oldPlaceHolderIndex = 0;
 
   if (placeHolderIndex == std::string::npos) {
     tokens.push_back(PlaceHolder(pattern));
@@ -19,6 +18,9 @@ Tokens parsePattern(const std::string &pattern) {
   } else {
     tokens.push_back(PlaceHolder());
   }
+
+  std::size_t oldPlaceHolderIndex = placeHolderIndex;
+  placeHolderIndex = pattern.find(StringRepresentationPlaceHolder);
 
   while (placeHolderIndex != std::string::npos) {
 
