@@ -1,6 +1,6 @@
 #include "format_literal.h"
 
-#include <vector>
+#include <iostream>
 
 namespace {
 const std::string StringRepresentationPlaceHolder = "{}";
@@ -10,26 +10,27 @@ using PlaceHolder = Capybara::Impl::PlaceHolder;
 
 Tokens parsePattern(const std::string &pattern) {
   Tokens tokens;
-  auto placeHolderIndex = pattern.find(StringRepresentationPlaceHolder);
+  auto oldPlaceHolderIndex = pattern.find(StringRepresentationPlaceHolder);
 
-  if (placeHolderIndex == std::string::npos) {
+  if (oldPlaceHolderIndex == std::string::npos) {
     tokens.push_back(PlaceHolder(pattern));
     return tokens;
-  } else {
-    tokens.push_back(PlaceHolder());
+  }
+  if (oldPlaceHolderIndex > 0) {
+    tokens.push_back(PlaceHolder(pattern.substr(0, oldPlaceHolderIndex)));
   }
 
-  std::size_t oldPlaceHolderIndex = placeHolderIndex;
-  placeHolderIndex = pattern.find(StringRepresentationPlaceHolder);
+  tokens.push_back(PlaceHolder());
+
+  auto placeHolderIndex =
+      pattern.find(StringRepresentationPlaceHolder, oldPlaceHolderIndex);
 
   while (placeHolderIndex != std::string::npos) {
-
-    auto placeHolder = pattern.substr(
-        oldPlaceHolderIndex + StringRepresentationPlaceHolder.size(),
-        placeHolderIndex - oldPlaceHolderIndex -
-            StringRepresentationPlaceHolder.size());
-
-    if (placeHolderIndex != 0) {
+    if (placeHolderIndex != 0 && oldPlaceHolderIndex < placeHolderIndex ) {
+      auto placeHolder = pattern.substr(
+          oldPlaceHolderIndex + StringRepresentationPlaceHolder.size(),
+          placeHolderIndex - oldPlaceHolderIndex -
+              StringRepresentationPlaceHolder.size());
 
       tokens.push_back(PlaceHolder(std::move(placeHolder)));
       tokens.push_back(PlaceHolder());
@@ -40,6 +41,8 @@ Tokens parsePattern(const std::string &pattern) {
     placeHolderIndex =
         pattern.find(StringRepresentationPlaceHolder, placeHolderIndex + 1);
   }
+
+  tokens.push_back(PlaceHolder(pattern.substr(oldPlaceHolderIndex+ StringRepresentationPlaceHolder.size() )));
 
   return tokens;
 }
@@ -93,7 +96,10 @@ std::string toString(std::string text) { return text; }
 } // namespace Impl
 
 FormattedString::FormattedString(const std::string &pattern)
-    : _tokens(parsePattern(pattern)) {}
+    : _tokens(parsePattern(pattern)) {
+  std::cout << "Pattern " << pattern << " " << tokensToString(_tokens)
+            << std::endl;
+}
 
 FormattedString operator""_format(const char *pattern,
                                   const std::size_t /*size*/) {

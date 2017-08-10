@@ -3,8 +3,6 @@
 #include <vector>
 #include <string>
 
-#include <iostream>
-
 namespace Capybara {
 namespace Impl {
 
