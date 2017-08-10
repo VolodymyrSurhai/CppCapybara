@@ -1,7 +1,5 @@
 #include "format_literal.h"
 
-#include <iostream>
-
 namespace {
 const std::string StringRepresentationPlaceHolder = "{}";
 
@@ -26,7 +24,7 @@ Tokens parsePattern(const std::string &pattern) {
       pattern.find(StringRepresentationPlaceHolder, oldPlaceHolderIndex);
 
   while (placeHolderIndex != std::string::npos) {
-    if (placeHolderIndex != 0 && oldPlaceHolderIndex < placeHolderIndex ) {
+    if (placeHolderIndex != 0 && oldPlaceHolderIndex < placeHolderIndex) {
       auto placeHolder = pattern.substr(
           oldPlaceHolderIndex + StringRepresentationPlaceHolder.size(),
           placeHolderIndex - oldPlaceHolderIndex -
@@ -42,7 +40,8 @@ Tokens parsePattern(const std::string &pattern) {
         pattern.find(StringRepresentationPlaceHolder, placeHolderIndex + 1);
   }
 
-  tokens.push_back(PlaceHolder(pattern.substr(oldPlaceHolderIndex+ StringRepresentationPlaceHolder.size() )));
+  tokens.push_back(PlaceHolder(pattern.substr(
+      oldPlaceHolderIndex + StringRepresentationPlaceHolder.size())));
 
   return tokens;
 }
@@ -96,10 +95,7 @@ std::string toString(std::string text) { return text; }
 } // namespace Impl
 
 FormattedString::FormattedString(const std::string &pattern)
-    : _tokens(parsePattern(pattern)) {
-  std::cout << "Pattern " << pattern << " " << tokensToString(_tokens)
-            << std::endl;
-}
+    : _tokens(parsePattern(pattern)) {}
 
 FormattedString operator""_format(const char *pattern,
                                   const std::size_t /*size*/) {
