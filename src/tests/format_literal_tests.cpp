@@ -3,7 +3,8 @@
 #include <gtest/gtest.h>
 
 namespace Capybara {
-TEST(FormatLiteralTestSuite, MixedParamsTestCase) {
+namespace Tests {
+TEST(FormatLiteralTestSuite, mixedParamsTestCase) {
 
   const auto actual = "{}-{}-{}::{}::{}<={}={}"_format("a", "b", 23, "dsf",
                                                        1.234345, "d", "Вжух");
@@ -12,23 +13,24 @@ TEST(FormatLiteralTestSuite, MixedParamsTestCase) {
   EXPECT_EQ(expected, actual);
 }
 
-TEST(FormatLiteralTestSuite, SameParamsTestWihtTwoIntsCase) {
+TEST(FormatLiteralTestSuite, sameParamsTestWihtTwoIntsCase) {
   EXPECT_EQ("1-2-3", "{}-{}-{}"_format(1, 2, 3));
   EXPECT_EQ("-1-2-3-", "-{}-{}-{}-"_format(1, 2, 3));
   EXPECT_EQ("Aaaa-Bbbb-Cccc", "{}-{}-{}"_format("Aaaa", "Bbbb", "Cccc"));
 }
 
 TEST(FormatLiteralTestSuite,
-     SameParamsTestWihtTwoValuesAndThreePlaceHoldersCase) {
+     sameParamsTestWihtTwoValuesAndThreePlaceHoldersCase) {
   EXPECT_EQ("1-2-{}", "{}-{}-{}"_format(1, 2));
   EXPECT_EQ("ABC-DEF-{}", "{}-{}-{}"_format("ABC", "DEF"));
 }
 
 TEST(FormatLiteralTestSuite,
-     SameParamsTestWihtThreeValuesAndTwoPlaceHoldersCase) {
+     sameParamsTestWihtThreeValuesAndTwoPlaceHoldersCase) {
   EXPECT_EQ("1-2", "{}-{}"_format(1, 2, 3));
   EXPECT_EQ("<1-2>", "<{}-{}>"_format(1, 2, 3));
   EXPECT_EQ("<Aaaa-Bbbb>", "<{}-{}>"_format("Aaaa", "Bbbb", "Cccc"));
 }
 
+} // namespace Tests
 } // namespace Capybara

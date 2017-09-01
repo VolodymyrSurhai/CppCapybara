@@ -3,7 +3,8 @@
 #include <gtest/gtest.h>
 
 namespace Capybara {
-TEST(ReverseTestSuite, ReversedIntVectorIteratorTestCase) {
+namespace Tests {
+TEST(ReverseTestSuite, reversedIntVectorIteratorTestCase) {
   std::vector<int> container = {1, 2, 3, 4};
 
   std::string result;
@@ -15,7 +16,7 @@ TEST(ReverseTestSuite, ReversedIntVectorIteratorTestCase) {
   EXPECT_EQ("4321", result);
 }
 
-TEST(ReverseTestSuite, ReversedIntVectorConstIteratorTestCase) {
+TEST(ReverseTestSuite, reversedIntVectorConstIteratorTestCase) {
   const std::vector<int> container = {1, 2, 3, 4};
 
   std::string result;
@@ -27,7 +28,7 @@ TEST(ReverseTestSuite, ReversedIntVectorConstIteratorTestCase) {
   EXPECT_EQ("4321", result);
 }
 
-TEST(ReverseTestSuite, ReversedStringVectorIteratorTestCase) {
+TEST(ReverseTestSuite, reversedStringVectorIteratorTestCase) {
   std::vector<std::string> container = {"1", "2", "3", "4"};
 
   std::string result;
@@ -39,7 +40,7 @@ TEST(ReverseTestSuite, ReversedStringVectorIteratorTestCase) {
   EXPECT_EQ("4321", result);
 }
 
-TEST(ReverseTestSuite, ReversedStringVectorConstIteratorTestCase) {
+TEST(ReverseTestSuite, reversedStringVectorConstIteratorTestCase) {
   const std::vector<std::string> container = {"1", "2", "3", "4"};
 
   std::string result;
@@ -51,4 +52,5 @@ TEST(ReverseTestSuite, ReversedStringVectorConstIteratorTestCase) {
   EXPECT_EQ("4321", result);
 }
 
+} // namespace Tests
 } // namespace Capybara
