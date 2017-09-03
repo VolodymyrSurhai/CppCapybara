@@ -18,10 +18,10 @@ TEST(ZipTestSuite, ZipIntAndStringOldFor) {
   auto endIterator = std::end(zipped);
   for (; zippedIterator != endIterator; ++zippedIterator) {
     auto zipped = *zippedIterator;
-    result += std::to_string(zipped.first);
+    result += zipped.second;
 
     zipped.first += 10;
-    result += zipped.first;
+    result += std::to_string(zipped.first);
   }
 
   EXPECT_EQ("first21second31third41fourth51", result);
@@ -34,10 +34,10 @@ TEST(ZipTestSuite, ZipIntAndStringModernFor) {
   std::string result;
 
   for (auto zipped : zip(numbers, texts)) {
-    result += std::to_string(zipped.first);
+    result += zipped.second;
 
     zipped.first += 10;
-    result += zipped.first;
+    result += std::to_string(zipped.first);
   }
 
   EXPECT_EQ("first21second31third41fourth51", result);
