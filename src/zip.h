@@ -1,81 +1,83 @@
 #pragma once
 
-#include <tuple>
+#include <iterator>
 
 namespace Capybara {
 
 template <typename FirstContainer, typename SecondContainer>
 class IterablePair {
 public:
-  class Iterator {
+  using FirstIterator = typename FirstContainer::iterator;
+  using SecondIterator = typename SecondContainer::iterator;
+  using PairIterator = std::pair<FirstIterator, SecondIterator>;
+
+  using FirstValueType = typename FirstContainer::value_type;
+  using SecondValueType = typename SecondContainer::value_type;
+  using PairValue = std::pair<FirstValueType, SecondValueType>;
+
+  class Iterator final {
+
   public:
-      using FirstIterator = typename FirstContainer::iterator;
-      using SecondIterator = typename SecondContainer::iterator;
-      using TupleIterator = std::tuple<FirstIterator&, SecondIterator&>;
+    Iterator(FirstIterator firstIterator, SecondIterator secondIterator)
+        : _firstIterator(std::move(firstIterator)),
+          _secondIterator(std::move(secondIterator)) {}
 
-      Iterator(FirstIterator firstIterator, SecondIterator secondIterator)
-          : _firstIterator(std::move(firstIterator))
-          , _secondIterator(std::move(secondIterator))
-      {
-      }
+    Iterator(PairIterator &&other)
+        : _firstIterator(std::move(other._firstIterator)),
+          _secondIterator(std::move(other._secondIterator)) {}
 
-      TupleIterator operator*()
-      {
-            return makeTuple();
-      }
+    PairValue operator*() {
+      return PairValue(*_firstIterator, *_secondIterator);
+    }
 
-      TupleIterator& operator = (const TupleIterator& other)
-      {
-          _firstIterator = other.first;
-          _secondIterator = other.second;
-          return *this;
-      }
+    PairIterator &operator=(const Iterator &other) {
+      _firstIterator = other.first;
+      _secondIterator = other.second;
+      return *this;
+    }
 
-      bool operator != (const TupleIterator& other)
-      {
-           return _firstIterator != other.first && _secondIterator != other.second;
-      }
+    bool operator!=(const Iterator &other) {
+      return _firstIterator != other._firstIterator &&
+             _secondIterator != other._secondIterator;
+    }
 
-      TupleIterator operator ++ ()
-      {
-          ++_firstIterator;
-          ++_secondIterator;
-          return makeTuple();
-      }
+    PairIterator operator++() {
+      ++_firstIterator;
+      ++_secondIterator;
+      return makePair();
+    }
 
-      TupleIterator operator ++ (int)
-      {
-          auto result = makeTuple();
+    PairIterator operator++(int) {
+      auto result = makePair();
 
-          ++_firstIterator;
-          ++_secondIterator;
+      ++_firstIterator;
+      ++_secondIterator;
 
-          return result;
-      }
+      return result;
+    }
 
   private:
-      TupleIterator makeTuple()
-      {
-          return std::tuple<FirstIterator,SecondIterator>(_firstIterator, _secondIterator);
-      }
-
+    PairIterator makePair() {
+      return PairIterator(_firstIterator, _secondIterator);
+    }
 
     FirstIterator _firstIterator;
     SecondIterator _secondIterator;
   };
 
   IterablePair(FirstContainer firstContainer, SecondContainer secondContainer)
-      : _firstContainer(firstContainer)
-      , _secondContainer(secondContainer)
-  {
-  }
+      : _firstContainer(firstContainer), _secondContainer(secondContainer) {}
+
+  IterablePair(const IterablePair &other)
+      : _firstContainer(other._firstContainer),
+        _secondContainer(other._secondContainer) {}
 
   Iterator begin() {
-      return IterablePair(std::begin(_firstContainer), std::begin(_secondContainer));
+    return Iterator(std::begin(_firstContainer), std::begin(_secondContainer));
   }
 
   Iterator end() {
-      return IterablePair(std::end(_firstContainer), std::end(_secondContainer));
+    return Iterator(std::end(_firstContainer), std::end(_secondContainer));
   }
 
 private:
@@ -89,5 +91,4 @@ zip(FirstContainer firstContainer, SecondContainer secondContainer) {
   return IterablePair<FirstContainer, SecondContainer>(
       std::move(firstContainer), std::move(secondContainer));
 }
-
 } // namespace Capybara
