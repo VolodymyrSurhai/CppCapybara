@@ -8,11 +8,11 @@ namespace Capybara {
 namespace Tests {
 TEST(ZipTestSuite, ZipIntAndString) {
   std::vector<int> numbers = {11, 21, 31, 41};
-  std::vector<std::string> text = {"first", "second", "third", "fourth"};
+  std::vector<std::string> texts = {"first", "second", "third", "fourth"};
 
   std::string result;
 
-  for (auto& zipped : zip(numbers, text)) {
+  for (auto& zipped : zip(numbers, texts)) {
     result += std::to_string(zipped.second);
 
     zipped.first += 10;

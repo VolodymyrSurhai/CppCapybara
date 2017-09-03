@@ -9,51 +9,60 @@ class IterablePair {
 public:
   class Iterator {
   public:
-      Iterator()
-      {
+      using FirstIterator = typename FirstContainer::iterator;
+      using SecondIterator = typename SecondContainer::iterator;
 
+      Iterator(FirstIterator firstIterator, SecondIterator secondIterator)
+          : _firstIterator(std::move(firstIterator))
+          , _secondIterator(std::move(secondIterator))
+      {
+      }
+
+      std::tuple<typename FirstContainer::value_type, typename SecondContainer::value_type> operator*()
+      {
+            return std::make_tuple(*_firstIterator, *_secondIterator);
+      }
+
+      std::tuple<FirstIterator, SecondIterator>& operator = (const std::tuple< FirstIterator, SecondIterator>& other)
+      {
+          _firstIterator = other.first;
+          _secondIterator = other.second;
+          return *this;
+      }
+
+      bool operator != (const std::tuple<FirstIterator, SecondIterator>& other)
+      {
+           return _firstIterator != other.first && _secondIterator != other.second;
       }
 
   private:
-
+    FirstIterator _firstIterator;
+    SecondIterator _secondIterator;
   };
 
-  IterablePair(FirstContainer firstContainer, SecondContainer secondContainer) {
-
+  IterablePair(FirstContainer firstContainer, SecondContainer secondContainer)
+      : _firstContainer(firstContainer)
+      , _secondContainer(secondContainer)
+  {
   }
 
-  Iterator begin() {}
-
-  Iterator end() {}
-
-private:
-};
-
-template <typename FirstContainer, typename SecondContainer> class ZipWrapper {
-public:
-
-
-
-  ZipWrapper(FirstContainer firstContainer, SecondContainer secondContainer)
-      : _iterablePair(std::move(firstContainer), std::move(secondContainer)) {}
-
-  IterablePair begin() {
-    return _iterablePair.begin();
+  Iterator begin() {
+      return IterablePair(std::begin(_firstContainer), std::begin(_secondContainer));
   }
 
-
-  IterablePair end() {
-    return _iterablePair.end();
+  Iterator end() {
+      return IterablePair(std::end(_firstContainer), std::end(_secondContainer));
   }
 
 private:
-  IterablePair _iterablePair;
+  FirstContainer _firstContainer;
+  SecondContainer _secondContainer;
 };
 
 template <typename FirstContainer, typename SecondContainer>
-ZipWrapper<FirstContainer, SecondContainer>
+IterablePair<FirstContainer, SecondContainer>
 zip(FirstContainer firstContainer, SecondContainer secondContainer) {
-  return ZipWrapper<FirstContainer, SecondContainer>(
+  return IterablePair<FirstContainer, SecondContainer>(
       std::move(firstContainer), std::move(secondContainer));
 }
 
