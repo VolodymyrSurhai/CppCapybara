@@ -11,6 +11,7 @@ public:
   public:
       using FirstIterator = typename FirstContainer::iterator;
       using SecondIterator = typename SecondContainer::iterator;
+      using TupleIterator = std::tuple<FirstIterator&, SecondIterator&>;
 
       Iterator(FirstIterator firstIterator, SecondIterator secondIterator)
           : _firstIterator(std::move(firstIterator))
@@ -18,24 +19,47 @@ public:
       {
       }
 
-      std::tuple<typename FirstContainer::value_type, typename SecondContainer::value_type> operator*()
+      TupleIterator operator*()
       {
-            return std::make_tuple(*_firstIterator, *_secondIterator);
+            return makeTuple();
       }
 
-      std::tuple<FirstIterator, SecondIterator>& operator = (const std::tuple< FirstIterator, SecondIterator>& other)
+      TupleIterator& operator = (const TupleIterator& other)
       {
           _firstIterator = other.first;
           _secondIterator = other.second;
           return *this;
       }
 
-      bool operator != (const std::tuple<FirstIterator, SecondIterator>& other)
+      bool operator != (const TupleIterator& other)
       {
            return _firstIterator != other.first && _secondIterator != other.second;
       }
 
+      TupleIterator operator ++ ()
+      {
+          ++_firstIterator;
+          ++_secondIterator;
+          return makeTuple();
+      }
+
+      TupleIterator operator ++ (int)
+      {
+          auto result = makeTuple();
+
+          ++_firstIterator;
+          ++_secondIterator;
+
+          return result;
+      }
+
   private:
+      TupleIterator makeTuple()
+      {
+          return std::tuple<FirstIterator,SecondIterator>(_firstIterator, _secondIterator);
+      }
+
+
     FirstIterator _firstIterator;
     SecondIterator _secondIterator;
   };
