@@ -13,14 +13,14 @@ for (const auto& item : reversed(container))
     use_item(item);
 }
 ```
-## Capybara::format
+## Capybara::format.
 ```cpp
 auto formatted_text = "{}-{}-{}::{}::{}<={}={}"_format("a", "b", 23, "dsf", 1.234345, "d", "Вжух");
 std::cout << formatted_text << std::endl;
 ```
 Result:
 > a-b-23::dsf::1.234345<=d=Вжух
-## Capybara::zip.
+## Capybara::zip (unstable).
 This function returns of a tuple from iterators.
 ```cpp
 std::vector<int> numbers = {11, 21, 31, 41};
