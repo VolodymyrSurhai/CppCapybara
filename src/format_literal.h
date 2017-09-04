@@ -37,7 +37,7 @@ std::string toString(T item) {
 template <class T>
 Tokens::iterator fillTokens(Tokens::iterator iterator,
                             const Tokens::iterator end,
-                            const std::size_t argIndex, const T arg) {
+                            const std::size_t /*argIndex*/, const T arg) {
   while (iterator < end) {
         if (!iterator->isValueWasSet()) {
           iterator->setValue(toString(arg));
