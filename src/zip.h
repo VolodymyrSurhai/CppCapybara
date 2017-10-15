@@ -1,62 +1,51 @@
 #pragma once
 
 #include <iterator>
+#include <utility>
 
 namespace Capybara {
 
-template <typename FirstIterator, typename SecondIterator, typename PairValue>
+template <typename FirstIterator, typename SecondIterator>
 class Iterator final {
 
 public:
   using PairIterator = std::pair<FirstIterator, SecondIterator>;
 
   Iterator(FirstIterator firstIterator, SecondIterator secondIterator)
-      : _firstIterator(std::move(firstIterator)),
-        _secondIterator(std::move(secondIterator)) {}
+      : _iterators(std::move(firstIterator), std::move(secondIterator)) {}
 
-  Iterator(PairIterator &&other)
-      : _firstIterator(std::move(other._firstIterator)),
-        _secondIterator(std::move(other._secondIterator)) {}
+  Iterator(PairIterator &&other) : _iterators(std::move(other._iterators)) {}
 
-  PairValue operator*() {
-    return PairValue(*_firstIterator, *_secondIterator);
-  }
+  PairIterator operator*() { return _iterators; }
 
   PairIterator &operator=(const Iterator &other) {
-    _firstIterator = other.first;
-    _secondIterator = other.second;
+    _iterators = other._iterators;
     return *this;
   }
 
   bool operator!=(const Iterator &other) {
-    return _firstIterator != other._firstIterator &&
-           _secondIterator != other._secondIterator;
+    return _iterators.first != other._iterators.first &&
+           _iterators.second != other._iterators.second;
   }
 
-  PairIterator operator++() {
-    ++_firstIterator;
-    ++_secondIterator;
-    return makePair();
+  PairIterator &operator++() {
+    ++_iterators.first;
+    ++_iterators.second;
+    return _iterators;
   }
 
-  PairIterator operator++(int) {
-    auto result = makePair();
+  PairIterator &operator++(int) {
+    auto result = _iterators;
 
-    ++_firstIterator;
-    ++_secondIterator;
+    ++_iterators.first;
+    ++_iterators.second;
 
     return result;
   }
 
 private:
-  PairIterator makePair() {
-    return PairIterator(_firstIterator, _secondIterator);
-  }
-
-  FirstIterator _firstIterator;
-  SecondIterator _secondIterator;
+  PairIterator _iterators;
 };
-
 
 template <typename FirstContainer, typename SecondContainer>
 class IterablePair {
@@ -64,12 +53,11 @@ public:
   using FirstIterator = typename FirstContainer::iterator;
   using SecondIterator = typename SecondContainer::iterator;
 
-
   using FirstValueType = typename FirstContainer::value_type;
   using SecondValueType = typename SecondContainer::value_type;
   using PairValue = std::pair<FirstValueType, SecondValueType>;
 
-  using LocalIterator = Iterator<FirstIterator, SecondIterator, PairValue>;
+  using LocalIterator = Iterator<FirstIterator, SecondIterator>;
 
   IterablePair(FirstContainer firstContainer, SecondContainer secondContainer)
       : _firstContainer(firstContainer), _secondContainer(secondContainer) {}
@@ -79,7 +67,8 @@ public:
         _secondContainer(other._secondContainer) {}
 
   LocalIterator begin() {
-    return LocalIterator(std::begin(_firstContainer), std::begin(_secondContainer));
+    return LocalIterator(std::begin(_firstContainer),
+                         std::begin(_secondContainer));
   }
 
   LocalIterator end() {
