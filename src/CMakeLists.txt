@@ -10,6 +10,8 @@ file(GLOB PROD_SRC
 add_library(${PROJECT_NAME} ${PROD_SRC})
 
 if (${CC_ENABLE_TESTS})
+    enable_testing()
+
     file(GLOB TEST_SRC
             "tests/*.h"
             "tests/*.cpp"
