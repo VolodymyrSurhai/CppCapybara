@@ -9,7 +9,7 @@ namespace Impl {
 class PlaceHolder {
 public:
   PlaceHolder();
-  explicit PlaceHolder(const std::string &value);
+  explicit PlaceHolder(std::string value);
 
   bool isValueWasSet() const;
   std::string getValue() const;

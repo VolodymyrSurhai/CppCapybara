@@ -1,47 +1,49 @@
 #include "format_literal.h"
 
 namespace {
-const std::string StringRepresentationPlaceHolder = "{}";
-
 using Tokens = Capybara::FormattedString::Tokens;
 using PlaceHolder = Capybara::Impl::PlaceHolder;
 
+const auto StringRepresentationPlaceHolder = "{}";
+
 Tokens parsePattern(const std::string &pattern) {
+  static const auto stringRepresentationPlaceHolder =
+      std::string(StringRepresentationPlaceHolder);
   Tokens tokens;
-  auto oldPlaceHolderIndex = pattern.find(StringRepresentationPlaceHolder);
+  auto oldPlaceHolderIndex = pattern.find(stringRepresentationPlaceHolder);
 
   if (oldPlaceHolderIndex == std::string::npos) {
-    tokens.push_back(PlaceHolder(pattern));
+    tokens.emplace_back(PlaceHolder(pattern));
     return tokens;
   }
   if (oldPlaceHolderIndex > 0) {
-    tokens.push_back(PlaceHolder(pattern.substr(0, oldPlaceHolderIndex)));
+    tokens.emplace_back(PlaceHolder(pattern.substr(0, oldPlaceHolderIndex)));
   }
 
-  tokens.push_back(PlaceHolder());
+  tokens.emplace_back(PlaceHolder());
 
   auto placeHolderIndex =
-      pattern.find(StringRepresentationPlaceHolder, oldPlaceHolderIndex);
+      pattern.find(stringRepresentationPlaceHolder, oldPlaceHolderIndex);
 
   while (placeHolderIndex != std::string::npos) {
     if (placeHolderIndex != 0 && oldPlaceHolderIndex < placeHolderIndex) {
       auto placeHolder = pattern.substr(
-          oldPlaceHolderIndex + StringRepresentationPlaceHolder.size(),
+          oldPlaceHolderIndex + stringRepresentationPlaceHolder.size(),
           placeHolderIndex - oldPlaceHolderIndex -
-              StringRepresentationPlaceHolder.size());
+              stringRepresentationPlaceHolder.size());
 
-      tokens.push_back(PlaceHolder(std::move(placeHolder)));
-      tokens.push_back(PlaceHolder());
+      tokens.emplace_back(PlaceHolder(placeHolder));
+      tokens.emplace_back(PlaceHolder());
     }
 
     oldPlaceHolderIndex = placeHolderIndex;
 
     placeHolderIndex =
-        pattern.find(StringRepresentationPlaceHolder, placeHolderIndex + 1);
+        pattern.find(stringRepresentationPlaceHolder, placeHolderIndex + 1);
   }
 
-  tokens.push_back(PlaceHolder(pattern.substr(
-      oldPlaceHolderIndex + StringRepresentationPlaceHolder.size())));
+  tokens.emplace_back(PlaceHolder(pattern.substr(
+      oldPlaceHolderIndex + stringRepresentationPlaceHolder.size())));
 
   return tokens;
 }
@@ -52,7 +54,7 @@ namespace Impl {
 
 PlaceHolder::PlaceHolder() : _valueWasSet(false) {}
 
-PlaceHolder::PlaceHolder(const std::string &value)
+PlaceHolder::PlaceHolder(std::string value)
     : _valueWasSet(true), _value(std::move(value)) {}
 
 bool PlaceHolder::isValueWasSet() const { return _valueWasSet; }
